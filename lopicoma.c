@@ -17,8 +17,8 @@ int main()
     while (true)
     {
         gpio_put(pulse_pin, true);
-        sleep_ms(1);
+        sleep_us(3);
         gpio_put(pulse_pin, false);
-        sleep_ms(1);
+        sleep_us(3);
     }
 }
