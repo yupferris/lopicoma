@@ -12,8 +12,10 @@ add_executable(lopicoma
     lopicoma.c
 )
 
+pico_generate_pio_header(lopicoma ${CMAKE_CURRENT_LIST_DIR}/pulse.pio)
+
 pico_enable_stdio_uart(lopicoma 1)
 
 pico_add_extra_outputs(lopicoma)
 
-target_link_libraries(lopicoma pico_stdlib)
+target_link_libraries(lopicoma pico_stdlib hardware_pio)
