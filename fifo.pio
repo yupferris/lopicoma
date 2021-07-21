@@ -1,0 +1,20 @@
+.program fifo
+
+.wrap_target
+    out pins, 8 [0]
+.wrap
+
+% c-sdk {
+static inline void fifo_program_init(PIO pio, uint sm, uint offset, uint pin)
+{
+    pio_sm_config c = fifo_program_get_default_config(offset);
+    sm_config_set_out_pins(&c, pin, 8);
+    sm_config_set_fifo_join(&c, PIO_FIFO_JOIN_TX);
+    sm_config_set_out_shift(&c, false, true, 32);
+    for (uint i = 0; i < 8; i++)
+        pio_gpio_init(pio, pin + i);
+    pio_sm_set_consecutive_pindirs(pio, sm, pin, 8, true);
+    pio_sm_init(pio, sm, offset, &c);
+    pio_sm_set_enabled(pio, sm, true);
+}
+%}

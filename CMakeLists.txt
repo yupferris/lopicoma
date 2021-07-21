@@ -12,7 +12,7 @@ add_executable(lopicoma
     lopicoma.c
 )
 
-pico_generate_pio_header(lopicoma ${CMAKE_CURRENT_LIST_DIR}/pulse.pio)
+pico_generate_pio_header(lopicoma ${CMAKE_CURRENT_LIST_DIR}/fifo.pio)
 
 pico_enable_stdio_uart(lopicoma 1)
 

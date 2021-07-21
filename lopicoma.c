@@ -1,26 +1,30 @@
 #include "hardware/pio.h"
 #include "pico/stdlib.h"
 
-#include "pulse.pio.h"
+#include "fifo.pio.h"
 
 int main()
 {
     const uint led_pin = PICO_DEFAULT_LED_PIN;
     gpio_init(led_pin);
     gpio_set_dir(led_pin, GPIO_OUT);
+    gpio_put(led_pin, true);
 
-    const uint pulse_pin = 2;
+    const uint dac_base_pin = 2;
 
     PIO pio = pio0;
-    uint offset = pio_add_program(pio, &pulse_program);
+    uint offset = pio_add_program(pio, &fifo_program);
     uint sm = pio_claim_unused_sm(pio, true);
-    pulse_program_init(pio, sm, offset, pulse_pin);
+    fifo_program_init(pio, sm, offset, dac_base_pin);
 
     while (true)
     {
-        gpio_put(led_pin, true);
-        sleep_ms(250);
-        gpio_put(led_pin, false);
-        sleep_ms(250);
+        for (uint i = 0; i < 256; i += 4)
+        {
+            uint32_t packed = 0;
+            for (uint j = 0; j < 4; j++)
+                packed = (packed << 8) | (i + j);
+            pio_sm_put_blocking(pio, sm, packed);
+        }
     }
 }
